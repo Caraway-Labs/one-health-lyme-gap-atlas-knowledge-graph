@@ -1,0 +1,23 @@
+{
+  "configuration_version": "kg-v1.0.0",
+  "corpus": {
+    "rolling_years": 20,
+    "language": "english",
+    "require_pmc_open_access": true,
+    "base_clause": "(\"Lyme Disease\"[MeSH Terms] OR \"Lyme disease\"[Title/Abstract] OR \"Lyme borreliosis\"[Title/Abstract])",
+    "allowed_publication_types": ["Journal Article", "Clinical Trial", "Comparative Study", "Evaluation Study", "Meta-Analysis", "Observational Study", "Randomized Controlled Trial", "Systematic Review"],
+    "excluded_publication_types": ["Editorial", "News", "Comment", "Published Erratum", "Corrected and Republished Article"],
+    "query_families": {
+      "surveillance_epidemiology": ["epidemiology", "surveillance", "incidence", "prevalence", "reporting", "case definition", "outbreak"],
+      "vector_host_pathogen": ["Ixodes", "tick vector", "Borrelia burgdorferi", "reservoir", "host", "transmission"],
+      "environment_exposure": ["climate", "temperature", "precipitation", "land cover", "habitat", "seasonality", "outdoor exposure"],
+      "diagnostics_interventions_outcomes": ["diagnosis", "serology", "PCR", "prevention", "intervention", "treatment", "doxycycline", "outcome", "systematic review", "meta-analysis"]
+    }
+  },
+  "discovery": {"fetch_batch_size": 200, "requests_per_second_with_key": 8.0, "requests_per_second_without_key": 2.5, "max_retries": 3, "weekly_cron": "0 8 * * 1"},
+  "review": {"papers_require_human_review": true, "decisions": ["approved", "rejected", "deferred"]},
+  "extraction": {"primary_provider": "groq", "primary_model": "openai/gpt-oss-120b", "fallback_provider": "openai", "fallback_model": "gpt-5.6-luna", "route_token_threshold": 130000, "worker_concurrency": 1, "daily_budget_usd": 20, "monthly_budget_usd": 300},
+  "retrieval": {"embedding_model": "text-embedding-3-small", "embedding_dimensions": 1024, "entity_limit": 8, "evidence_limit": 20, "relationship_limit": 30, "max_tool_calls": 3},
+  "chat": {"model": "gpt-5.6-luna", "reasoning_effort": "low", "timeout_seconds": 30, "message_max_characters": 1000, "history_pairs": 6, "history_max_characters": 30000, "questions_per_ip": 10, "rate_window_seconds": 600, "concurrent_requests_per_ip": 3, "persist_conversations": true, "conversation_retention_days": 30, "daily_budget_usd": 5, "monthly_budget_usd": 100},
+  "operations": {"backup_cron": "30 10 * * *", "backup_retention_days": 30, "restore_test_cron": "0 9 1 */3 *", "outbound_event_alerts": false}
+}

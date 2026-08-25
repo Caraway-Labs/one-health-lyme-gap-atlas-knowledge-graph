@@ -1,0 +1,11 @@
+{
+  "name": "@caraway-labs/one-health-lyme-gap-atlas-knowledge-graph",
+  "version": "1.0.0",
+  "private": true,
+  "files": ["config", "schemas"],
+  "exports": {
+    "./config": "./config/kg-v1.0.0.json",
+    "./public-copy": "./config/public-copy-v1.json",
+    "./graph-schema": "./schemas/graph-v1.schema.json"
+  }
+}

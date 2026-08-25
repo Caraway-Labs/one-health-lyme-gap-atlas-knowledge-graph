@@ -1,0 +1,492 @@
+{
+  "$defs": {
+    "AssertionBasis": {
+      "enum": [
+        "explicit",
+        "inferred_single_source",
+        "inferred_multi_source",
+        "curated"
+      ],
+      "title": "AssertionBasis",
+      "type": "string"
+    },
+    "EvidencePassageNode": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "node_type": {
+          "$ref": "#/$defs/NodeType",
+          "default": "EvidencePassage"
+        },
+        "canonical_name": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Canonical Name",
+          "type": "string"
+        },
+        "aliases": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Aliases",
+          "type": "array"
+        },
+        "external_ids": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "External Ids",
+          "type": "object"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "source_configuration_version": {
+          "title": "Source Configuration Version",
+          "type": "string"
+        },
+        "paper_id": {
+          "title": "Paper Id",
+          "type": "string"
+        },
+        "excerpt": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "title": "Excerpt",
+          "type": "string"
+        },
+        "section_label": {
+          "title": "Section Label",
+          "type": "string"
+        },
+        "character_start": {
+          "minimum": 0,
+          "title": "Character Start",
+          "type": "integer"
+        },
+        "character_end": {
+          "exclusiveMinimum": 0,
+          "title": "Character End",
+          "type": "integer"
+        },
+        "excerpt_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Excerpt Hash",
+          "type": "string"
+        },
+        "extraction_summary": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Extraction Summary",
+          "type": "string"
+        },
+        "embedding": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Embedding"
+        }
+      },
+      "required": [
+        "id",
+        "canonical_name",
+        "created_at",
+        "source_configuration_version",
+        "paper_id",
+        "excerpt",
+        "section_label",
+        "character_start",
+        "character_end",
+        "excerpt_hash",
+        "extraction_summary"
+      ],
+      "title": "EvidencePassageNode",
+      "type": "object"
+    },
+    "GraphNode": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "node_type": {
+          "$ref": "#/$defs/NodeType"
+        },
+        "canonical_name": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Canonical Name",
+          "type": "string"
+        },
+        "aliases": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Aliases",
+          "type": "array"
+        },
+        "external_ids": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "External Ids",
+          "type": "object"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "source_configuration_version": {
+          "title": "Source Configuration Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "node_type",
+        "canonical_name",
+        "created_at",
+        "source_configuration_version"
+      ],
+      "title": "GraphNode",
+      "type": "object"
+    },
+    "NodeType": {
+      "enum": [
+        "Paper",
+        "EvidencePassage",
+        "DiseaseCondition",
+        "Pathogen",
+        "TickVector",
+        "Host",
+        "Place",
+        "StudyPopulation",
+        "Exposure",
+        "Outcome",
+        "Intervention",
+        "Diagnostic",
+        "EnvironmentalFactor"
+      ],
+      "title": "NodeType",
+      "type": "string"
+    },
+    "PaperNode": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "node_type": {
+          "$ref": "#/$defs/NodeType",
+          "default": "Paper"
+        },
+        "canonical_name": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Canonical Name",
+          "type": "string"
+        },
+        "aliases": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Aliases",
+          "type": "array"
+        },
+        "external_ids": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "External Ids",
+          "type": "object"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "source_configuration_version": {
+          "title": "Source Configuration Version",
+          "type": "string"
+        },
+        "pmid": {
+          "pattern": "^\\d{1,10}$",
+          "title": "Pmid",
+          "type": "string"
+        },
+        "pmcid": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pmcid"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "journal": {
+          "title": "Journal",
+          "type": "string"
+        },
+        "publication_date": {
+          "title": "Publication Date",
+          "type": "string"
+        },
+        "publication_types": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Publication Types",
+          "type": "array"
+        },
+        "language": {
+          "title": "Language",
+          "type": "string"
+        },
+        "pubmed_url": {
+          "title": "Pubmed Url",
+          "type": "string"
+        },
+        "access_status": {
+          "title": "Access Status",
+          "type": "string"
+        },
+        "content_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Content Hash",
+          "type": "string"
+        },
+        "full_text_object_key": {
+          "title": "Full Text Object Key",
+          "type": "string"
+        },
+        "query_match_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Query Match Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "canonical_name",
+        "created_at",
+        "source_configuration_version",
+        "pmid",
+        "title",
+        "journal",
+        "publication_date",
+        "publication_types",
+        "language",
+        "pubmed_url",
+        "access_status",
+        "content_hash",
+        "full_text_object_key",
+        "query_match_ids"
+      ],
+      "title": "PaperNode",
+      "type": "object"
+    },
+    "Polarity": {
+      "enum": [
+        "supports",
+        "does_not_support",
+        "mixed"
+      ],
+      "title": "Polarity",
+      "type": "string"
+    },
+    "RelationshipType": {
+      "enum": [
+        "ASSOCIATED_WITH",
+        "CAUSES",
+        "TRANSMITS",
+        "CARRIES",
+        "INFECTS",
+        "RESERVOIR_FOR",
+        "EXPOSES_TO",
+        "PREVENTS",
+        "TREATS",
+        "DIAGNOSES",
+        "HAS_OUTCOME",
+        "OCCURS_IN",
+        "INFLUENCES",
+        "EVALUATES"
+      ],
+      "title": "RelationshipType",
+      "type": "string"
+    },
+    "SemanticEdge": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "relationship_type": {
+          "$ref": "#/$defs/RelationshipType"
+        },
+        "source_node_id": {
+          "title": "Source Node Id",
+          "type": "string"
+        },
+        "source_node_type": {
+          "$ref": "#/$defs/NodeType"
+        },
+        "target_node_id": {
+          "title": "Target Node Id",
+          "type": "string"
+        },
+        "target_node_type": {
+          "$ref": "#/$defs/NodeType"
+        },
+        "paper_id": {
+          "title": "Paper Id",
+          "type": "string"
+        },
+        "evidence_passage_id": {
+          "title": "Evidence Passage Id",
+          "type": "string"
+        },
+        "assertion_basis": {
+          "$ref": "#/$defs/AssertionBasis"
+        },
+        "claim_text": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Claim Text",
+          "type": "string"
+        },
+        "polarity": {
+          "$ref": "#/$defs/Polarity"
+        },
+        "study_design": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Study Design"
+        },
+        "study_geography_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Study Geography Ids",
+          "type": "array"
+        },
+        "study_period": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Study Period"
+        },
+        "extraction_configuration_version": {
+          "title": "Extraction Configuration Version",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "relationship_type",
+        "source_node_id",
+        "source_node_type",
+        "target_node_id",
+        "target_node_type",
+        "paper_id",
+        "evidence_passage_id",
+        "assertion_basis",
+        "claim_text",
+        "polarity",
+        "extraction_configuration_version",
+        "created_at"
+      ],
+      "title": "SemanticEdge",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "configuration_version": {
+      "const": "kg-v1.0.0",
+      "title": "Configuration Version",
+      "type": "string"
+    },
+    "paper": {
+      "$ref": "#/$defs/PaperNode"
+    },
+    "passages": {
+      "items": {
+        "$ref": "#/$defs/EvidencePassageNode"
+      },
+      "title": "Passages",
+      "type": "array"
+    },
+    "nodes": {
+      "items": {
+        "$ref": "#/$defs/GraphNode"
+      },
+      "title": "Nodes",
+      "type": "array"
+    },
+    "edges": {
+      "items": {
+        "$ref": "#/$defs/SemanticEdge"
+      },
+      "title": "Edges",
+      "type": "array"
+    }
+  },
+  "required": [
+    "configuration_version",
+    "paper",
+    "passages",
+    "nodes",
+    "edges"
+  ],
+  "title": "One Health Lyme Gap Atlas graph contribution",
+  "type": "object",
+  "$id": "https://carawaylabs.com/schemas/knowledge-graph-v1.json"
+}

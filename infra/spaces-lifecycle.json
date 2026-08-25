@@ -1,0 +1,10 @@
+{
+  "Rules": [
+    {
+      "ID": "expire-neo4j-logical-backups-after-30-days",
+      "Status": "Enabled",
+      "Filter": { "Prefix": "neo4j/" },
+      "Expiration": { "Days": 30 }
+    }
+  ]
+}

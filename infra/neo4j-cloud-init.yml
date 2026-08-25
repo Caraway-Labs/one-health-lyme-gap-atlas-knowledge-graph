@@ -1,0 +1,14 @@
+#cloud-config
+package_update: true
+packages: [docker.io, awscli]
+write_files:
+  - path: /etc/neo4j-atlas/README
+    permissions: '0644'
+    content: |
+      Runtime secrets are installed separately by the protected deployment workflow.
+      They must never be placed in cloud-init user data or Terraform/doctl arguments.
+runcmd:
+  - systemctl enable --now docker
+  - [bash, -lc, 'device=$(find /dev/disk/by-id -maxdepth 1 -name "scsi-0DO_Volume_oh-lyme-*-neo4j-data" -print -quit); test -n "$device"; if ! blkid "$device" >/dev/null 2>&1; then mkfs.ext4 "$device"; fi; mkdir -p /mnt/neo4j; uuid=$(blkid -s UUID -o value "$device"); grep -q "$uuid" /etc/fstab || echo "UUID=$uuid /mnt/neo4j ext4 defaults,nofail,discard 0 2" >> /etc/fstab; mount /mnt/neo4j']
+  - mkdir -p /mnt/neo4j/data /mnt/neo4j/logs /mnt/neo4j/backups
+  - chmod 0700 /mnt/neo4j/data /mnt/neo4j/logs /mnt/neo4j/backups

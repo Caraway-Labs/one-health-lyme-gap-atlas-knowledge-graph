@@ -1,0 +1,9 @@
+{
+  "medical_notice": "Research information only; not medical advice, diagnosis, or treatment guidance. Consult a qualified clinician for personal health decisions.",
+  "safety_refusal": "I can summarize published Lyme disease research, but I cannot provide personalized diagnosis or treatment instructions. Please consult a qualified clinician for personal health decisions.",
+  "no_evidence": "I could not find supporting evidence in the approved literature graph for that question.",
+  "evidence_unavailable": "The literature evidence service is temporarily unavailable. Please try again later.",
+  "capacity_limited": "The evidence chatbot has reached its configured usage budget. Please try again later.",
+  "local_delete_notice": "Deleting a saved conversation removes this browser copy. A protected server copy may remain for up to 30 days under the retention policy.",
+  "ncbi_attribution": "Literature citations link to PubMed, a service of the U.S. National Library of Medicine. NLM does not endorse this product."
+}

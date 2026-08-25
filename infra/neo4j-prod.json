@@ -1,0 +1,1 @@
+{"environment":"prod","region":"sfo3","droplet_size":"s-2vcpu-8gb-amd","volume_gib":100,"neo4j_image":"neo4j:2026.07.1","public_bolt":false,"public_browser":false}
