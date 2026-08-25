@@ -36,13 +36,19 @@ $existingVolume = & doctl compute volume list --region $spec.region --output jso
   Where-Object { $_.name -eq "$name-data" }
 if ($existingVolume.Count -gt 1) { throw "Multiple $name-data volumes exist." }
 if ($existingVolume.Count -eq 0) {
-  $volume = & doctl compute volume create "$name-data" --region $spec.region --size $spec.volume_gib --desc "Retained Neo4j $Environment data" --output json | ConvertFrom-Json
+  $volumeJson = & doctl compute volume create "$name-data" --region $spec.region --size "$($spec.volume_gib)GiB" --desc "Retained Neo4j $Environment data" --output json
+  if ($LASTEXITCODE -ne 0) { throw "Failed to create retained $Environment Neo4j volume." }
+  $volume = $volumeJson | ConvertFrom-Json
+  if (-not $volume -or -not $volume[0].id) { throw "DigitalOcean did not return a retained $Environment Neo4j volume ID." }
   $volumeId = $volume[0].id
 } else {
   $volumeId = $existingVolume[0].id
 }
-$droplet = & doctl compute droplet create $name --region $spec.region --size $spec.droplet_size `
+$dropletJson = & doctl compute droplet create $name --region $spec.region --size $spec.droplet_size `
   --image ubuntu-24-04-x64 --vpc-uuid $VpcUuid --ssh-keys $SshKeyFingerprint `
   --volumes $volumeId --tag-names $name --user-data-file (Join-Path $PSScriptRoot 'neo4j-cloud-init.yml') `
-  --wait --output json | ConvertFrom-Json
+  --wait --output json
+if ($LASTEXITCODE -ne 0) { throw "Failed to create $Environment Neo4j Droplet." }
+$droplet = $dropletJson | ConvertFrom-Json
+if (-not $droplet -or -not $droplet[0].id) { throw "DigitalOcean did not return a $Environment Neo4j Droplet ID." }
 [pscustomobject]@{ environment = $Environment; droplet_id = $droplet[0].id; volume_id = $volumeId } | ConvertTo-Json
