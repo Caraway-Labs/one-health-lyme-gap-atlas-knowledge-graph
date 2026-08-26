@@ -4,6 +4,10 @@ set -euo pipefail
 : "${PRIVATE_IP:?VPC address required}"
 : "${NEO4J_PASSWORD:?initial admin password required}"
 : "${NEO4J_IMAGE:?pinned image required}"
+if [[ "$NEO4J_PASSWORD" == *"/"* || "$NEO4J_PASSWORD" == *$'\r'* || "$NEO4J_PASSWORD" == *$'\n'* ]]; then
+  echo "NEO4J_PASSWORD contains a character that cannot be represented in NEO4J_AUTH" >&2
+  exit 1
+fi
 if [[ "${ATLAS_ENV}" == "prod" ]]; then heap="3g"; pagecache="3g"; else heap="1500m"; pagecache="1500m"; fi
 install -d -m 0700 /etc/neo4j-atlas
 umask 077
