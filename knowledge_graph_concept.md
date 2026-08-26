@@ -98,6 +98,18 @@ requirements record only; it does not authorize implementation.
 
 ### Review and operational controls
 
+#### Accepted Neo4j Community authorization debt (2026-08-26)
+
+- Neo4j Community does not provide database-enforced reader/writer roles. V1
+  therefore uses one shared, trusted server-side `graph_runtime` identity for
+  the API and pipeline; this is accepted security debt, not least privilege.
+- The compensating controls are private-VPC-only Bolt, a Cloud Firewall, fixed
+  API retrieval templates, no arbitrary Cypher interface, protected runtime
+  secret storage, human-approved publication, and disabled public chat until
+  the live acceptance record is signed.
+- Enterprise RBAC or a separately governed internal retrieval gateway must be
+  reconsidered before public-scope expansion or additional graph consumers.
+
 - `papers_require_human_review` is a global, tracked pipeline setting captured
   on each paper record. Its initial PROD value is `true`; a later change to
   automatic ingestion is a simple, source-controlled configuration change with
