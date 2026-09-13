@@ -1,0 +1,43 @@
+name: Quality
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --all-extras --locked
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy src
+      - run: uv run pytest -q
+      - run: uv build
+      - name: Validate Neo4j shell automation
+        run: >-
+          docker run --rm -v "$PWD:/work:ro" -w /work alpine:3.21
+          sh -c 'apk add --no-cache bash >/dev/null &&
+          bash -n infra/configure-neo4j.sh infra/configure-neo4j-runtime.sh
+          infra/backup-neo4j.sh infra/install-neo4j-backup.sh
+          infra/install-neo4j-backup-runtime.sh'
+      - name: Validate Neo4j PowerShell automation
+        shell: pwsh
+        run: >-
+          $files = @('infra/Provision-Neo4j.ps1', 'infra/Open-Neo4jDevTunnel.ps1',
+          'infra/Configure-Neo4jRuntime.ps1', 'infra/Install-Neo4jBackup.ps1');
+          $errors = @(); foreach ($file in $files) {
+          $tokens = $null; $parseErrors = $null;
+          [System.Management.Automation.Language.Parser]::ParseFile(
+          (Resolve-Path $file), [ref]$tokens, [ref]$parseErrors) | Out-Null;
+          $errors += $parseErrors }; if ($errors.Count -gt 0) {
+          $errors | ForEach-Object Message; exit 1 }

@@ -15,9 +15,15 @@ init, command line, log, or repository.
    cannot enforce separate reader/writer roles; keep the API/data App Platform
    components on the same VPC and do not enable their feature flags until the
    recorded live acceptance is complete.
+   For local feature-branch work, run `Open-Neo4jDevTunnel.ps1` and set
+   `NEO4J_URI=bolt://localhost:7687`. This keeps Bolt private and carries the
+   connection through the operator SSH tunnel instead of exposing it publicly.
 4. Schedule `backup-neo4j.sh` off peak and apply `spaces-lifecycle.json` to the
-   private bucket. The script stops the database, dumps both `system` and
-   `neo4j`, records checksums, uploads, and restarts via its exit trap.
+   private bucket. Prefer `install-neo4j-backup.sh`, which installs the daily
+   10:30 UTC systemd timer and writes the Spaces credentials only to the
+   protected host environment file. The backup script stops the database,
+   dumps both `system` and `neo4j`, records checksums, uploads, and restarts
+   via its exit trap.
 5. Run `Test-Neo4jRestore.ps1` quarterly in the protected workflow. Store the
    restore record with constraints, counts, dump checksums, and representative
    retrieval evidence, then destroy only the verified ephemeral compute.

@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Neo4j Knowledge Graph Schema — v1",
+    "quality_profile": "showcase",
+    "viewBox": [1320, 760],
+    "repository": {
+      "url": "https://github.com/Caraway-Labs/one-health-lyme-gap-atlas-knowledge-graph.git",
+      "revision": "96ec50ef88a52d06b2589bab2afd072c7f755886"
+    }
+  },
+  "components": [
+    {
+      "id": "paper",
+      "type": "database",
+      "label": "Paper",
+      "sublabel": "PubMed / PMC citation record",
+      "tag": "pmid unique",
+      "pos": [70, 290],
+      "size": [220, 92],
+      "sources": [{ "path": "schemas/graph-v1.schema.json", "label": "PaperNode" }]
+    },
+    {
+      "id": "passage",
+      "type": "database",
+      "label": "EvidencePassage",
+      "sublabel": "Permitted excerpt + embedding",
+      "tag": "id unique · vector indexed",
+      "pos": [490, 290],
+      "size": [250, 92],
+      "sources": [{ "path": "schemas/graph-v1.schema.json", "label": "EvidencePassageNode" }]
+    },
+    {
+      "id": "knowledge-node",
+      "type": "database",
+      "label": "KnowledgeNode",
+      "sublabel": "11 canonical biomedical or contextual types",
+      "tag": "id unique · full-text indexed",
+      "pos": [960, 290],
+      "size": [270, 92],
+      "sources": [{ "path": "schemas/graph-v1.schema.json", "label": "GraphNode" }]
+    }
+  ],
+  "connections": [
+    {
+      "id": "paper-has-passage",
+      "from": "paper",
+      "to": "passage",
+      "label": "HAS_EVIDENCE_PASSAGE",
+      "variant": "emphasis"
+    },
+    {
+      "id": "semantic-edge",
+      "from": "knowledge-node",
+      "to": "knowledge-node",
+      "label": "typed SemanticEdge · provenance on edge",
+      "variant": "emphasis",
+      "labelAt": [1103, 396]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Shared provenance on all nodes",
+      "items": [
+        "id, canonical_name, created_at, source_configuration_version",
+        "aliases and external_ids retained when available"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Paper and passage evidence",
+      "items": [
+        "Paper: PMID, PMCID, title, journal, publication metadata",
+        "Passage: paper_id, excerpt hash, offsets, section, extraction summary"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "KnowledgeNode types",
+      "items": [
+        "DiseaseCondition, Pathogen, TickVector, Host, Place",
+        "StudyPopulation, Exposure, Outcome, Intervention, Diagnostic, EnvironmentalFactor"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Finite semantic relationship enum",
+      "items": [
+        "ASSOCIATED_WITH, CAUSES, TRANSMITS, CARRIES, INFECTS, RESERVOIR_FOR, EXPOSES_TO",
+        "PREVENTS, TREATS, DIAGNOSES, HAS_OUTCOME, OCCURS_IN, INFLUENCES, EVALUATES"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Evidence and interpretation controls",
+      "items": [
+        "Every SemanticEdge records paper_id, evidence_passage_id, claim text, polarity, study context, basis, and extraction version",
+        "CAUSES, TREATS, PREVENTS, and DIAGNOSES require an explicit cited statement; generic MENTIONS and RELATED_TO are prohibited"
+      ]
+    }
+  ]
+}
