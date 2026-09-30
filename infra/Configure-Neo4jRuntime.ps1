@@ -39,7 +39,7 @@ try {
   & scp $inputFile.FullName "root@${SshHost}:/tmp/neo4j-runtime-input"
   if ($LASTEXITCODE -ne 0) { throw 'Failed to transfer protected Neo4j configuration inputs.' }
 
-  $remoteCommand = "set -e; chmod 0700 /tmp/configure-neo4j.sh /tmp/configure-neo4j-runtime.sh; chmod 0600 /tmp/neo4j-runtime-input; ATLAS_ENV='$Environment' PRIVATE_IP='$PrivateIp' NEO4J_IMAGE='$Neo4jImage' /tmp/configure-neo4j-runtime.sh; rm -f /tmp/configure-neo4j.sh /tmp/configure-neo4j-runtime.sh /tmp/neo4j-runtime-input"
+  $remoteCommand = "set -e; trap 'rm -f /tmp/configure-neo4j.sh /tmp/configure-neo4j-runtime.sh /tmp/neo4j-runtime-input' EXIT; chmod 0700 /tmp/configure-neo4j.sh /tmp/configure-neo4j-runtime.sh; chmod 0600 /tmp/neo4j-runtime-input; sed -i 's/\r$//' /tmp/configure-neo4j.sh /tmp/configure-neo4j-runtime.sh; ATLAS_ENV='$Environment' PRIVATE_IP='$PrivateIp' NEO4J_IMAGE='$Neo4jImage' /tmp/configure-neo4j-runtime.sh"
   & ssh "root@$SshHost" $remoteCommand
   if ($LASTEXITCODE -ne 0) { throw "Neo4j $Environment runtime configuration failed." }
 } finally {
