@@ -39,12 +39,19 @@ done
 docker exec --env NEO4J_PASSWORD="${NEO4J_ADMIN_PASSWORD}" atlas-neo4j \
   cypher-shell -u neo4j 'RETURN 1' >/dev/null
 runtime_user_file="$(mktemp)"
-trap 'rm -f "$runtime_user_file"' EXIT
+trap 'rm -f "$runtime_user_file"; docker exec atlas-neo4j rm -f /tmp/runtime-user.cypher >/dev/null 2>&1 || true' EXIT
 umask 077
-printf "CREATE USER graph_runtime IF NOT EXISTS SET PASSWORD '%s' CHANGE NOT REQUIRED;\nALTER USER graph_runtime SET PASSWORD '%s' CHANGE NOT REQUIRED;\n" \
-  "${NEO4J_RUNTIME_PASSWORD}" "${NEO4J_RUNTIME_PASSWORD}" > "$runtime_user_file"
+printf "CREATE USER graph_runtime IF NOT EXISTS SET PASSWORD '%s' CHANGE NOT REQUIRED;\n" \
+  "${NEO4J_RUNTIME_PASSWORD}" > "$runtime_user_file"
 docker cp "$runtime_user_file" atlas-neo4j:/tmp/runtime-user.cypher
 docker exec --env NEO4J_PASSWORD="${NEO4J_ADMIN_PASSWORD}" atlas-neo4j \
   cypher-shell -u neo4j --file /tmp/runtime-user.cypher
-docker exec atlas-neo4j rm -f /tmp/runtime-user.cypher
+if ! docker exec --env NEO4J_PASSWORD="${NEO4J_RUNTIME_PASSWORD}" atlas-neo4j \
+  cypher-shell -u graph_runtime 'RETURN 1' >/dev/null 2>&1; then
+  printf "ALTER USER graph_runtime SET PASSWORD '%s' CHANGE NOT REQUIRED;\n" \
+    "${NEO4J_RUNTIME_PASSWORD}" > "$runtime_user_file"
+  docker cp "$runtime_user_file" atlas-neo4j:/tmp/runtime-user.cypher
+  docker exec --env NEO4J_PASSWORD="${NEO4J_ADMIN_PASSWORD}" atlas-neo4j \
+    cypher-shell -u neo4j --file /tmp/runtime-user.cypher
+fi
 unset NEO4J_ADMIN_PASSWORD NEO4J_RUNTIME_PASSWORD

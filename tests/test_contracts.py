@@ -140,6 +140,8 @@ def test_runtime_configuration_helper_keeps_passwords_off_the_command_line() -> 
     assert "NEO4J_RUNTIME_PASSWORD is required" in source
     assert "scp $inputFile.FullName" in source
     assert "configure-neo4j-runtime.sh" in source
+    assert "sed -i 's/\\r$//' /tmp/configure-neo4j.sh /tmp/configure-neo4j-runtime.sh" in source
+    assert "trap 'rm -f /tmp/configure-neo4j.sh" in source
     assert (
         "rm -f /tmp/configure-neo4j.sh /tmp/configure-neo4j-runtime.sh /tmp/neo4j-runtime-input"
         in source
